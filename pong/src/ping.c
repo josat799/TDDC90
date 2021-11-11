@@ -156,7 +156,7 @@ main(int argc, char **argv)
 			char dummy;
 			int i1, i2, i3, i4;
 
-			if (sscanf(optarg, "%u.%u.%u.%u%c",
+			if (sscanf(optarg, "%u.%u.%u.%u%c", // sscanf is in SDL banned functions
 				   &i1, &i2, &i3, &i4, &dummy) == 4) {
 				uint8_t *ptr;
 				ptr = (uint8_t*)&source.sin_addr;
@@ -249,7 +249,7 @@ main(int argc, char **argv)
 		}
 		if (device) {
 			memset(&ifr, 0, sizeof(ifr));
-			strcpy(ifr.ifr_name, device);
+			strcpy(ifr.ifr_name, device); // Is banned by SDL
 			if (setsockopt(probe_fd, SOL_SOCKET, SO_BINDTODEVICE, device, strlen(device)+1) == -1) {
 				if (IN_MULTICAST(ntohl(dst.sin_addr.s_addr))) {
 					struct ip_mreqn imr;
@@ -751,7 +751,7 @@ parse_reply(struct msghdr *msg, int cc, void *addr, struct timeval *tv)
 				return !error_pkt;
 			}
 	        default:
-			/* MUST NOT */
+			/* MUST NOT */ // This should not be allowed as in soem particular case the program can get in a bad state due to unimplemented default.
 			break;
 		}
 		if ((options & F_FLOOD) && !(options & (F_VERBOSE|F_QUIET))) {
