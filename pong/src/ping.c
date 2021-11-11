@@ -224,10 +224,12 @@ main(int argc, char **argv)
 			hp = gethostbyname2(target, AF_INET);
 			if (!hp) {
 				fprintf(stderr, "ping: unknown host ");
+				// Could be victim of format string bug. Use %s or something to avoid putting out whatever's on the stack.
 				fprintf(stderr, target);
 				fprintf(stderr, "\n");
 				return(2);
 			}
+			// Could be out-of-bounds read?
 			memcpy(&whereto.sin_addr, hp->h_addr, 4);
 			safe_strcpy(hp->h_name, hnamebuf);
 			hostname = hnamebuf;
@@ -249,7 +251,9 @@ main(int argc, char **argv)
 		}
 		if (device) {
 			memset(&ifr, 0, sizeof(ifr));
+			// Could result in buffer overrun as destination size is not specified
 			strcpy(ifr.ifr_name, device);
+			// Off-by-one error caused by strlen
 			if (setsockopt(probe_fd, SOL_SOCKET, SO_BINDTODEVICE, device, strlen(device)+1) == -1) {
 				if (IN_MULTICAST(ntohl(dst.sin_addr.s_addr))) {
 					struct ip_mreqn imr;
@@ -432,6 +436,8 @@ main(int argc, char **argv)
 	/* Estimate memory eaten by single packet. It is rough estimate.
 	 * Actually, for small datalen's it depends on kernel side a lot. */
 	hold = datalen + 8;
+
+	// Calculations with big numbers, could end up in sign errors
 	hold += ((hold+511)/512)*(optlen + 20 + 16 + 64 + 160);
 	sock_setbufs(icmp_sock, hold);
 
@@ -464,7 +470,7 @@ main(int argc, char **argv)
 			return(2);
 		}
 	}
-
+	// Could result in sign error. Use sizeof to ensure it's safe. 
 	if (datalen > 0xFFFF - 8 - optlen - 20) {
 		if (uid || datalen > sizeof(outpack)-8) {
 			fprintf(stderr, "Error: packet size %d is too large. Maximum is %d\n", datalen, 0xFFFF-8-20-optlen);
