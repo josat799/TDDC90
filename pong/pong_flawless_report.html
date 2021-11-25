@@ -1,0 +1,247 @@
+
+<h2>Final Results</h2>
+<ul>
+<li>src/ping.c:227: <b>  [4] </b> (format) <i> fprintf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping.c:252: <b>  [4] </b> (buffer) <i> strcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
+  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
+  misused). </i>
+<li>src/ping.c:258: <b>  [4] </b> (format) <i> fprintf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping.c:323: <b>  [4] </b> (format) <i> fprintf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping.c:486: <b>  [4] </b> (format) <i> printf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping.c:1155: <b>  [4] </b> (buffer) <i> sprintf:
+  Does not check for buffer overflows (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Use
+  sprintf_s, snprintf, or vsnprintf. </i>
+<li>src/ping_common.c:715: <b>  [4] </b> (format) <i> printf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping_common.c:791: <b>  [4] </b> (format) <i> printf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (<a href="http://cwe.mitre.org/data/definitions/134.html">CWE-134</a>). Use
+  a constant for the format specification. </i>
+<li>src/ping.c:125: <b>  [3] </b> (buffer) <i> getopt:
+  Some older implementations do not protect against internal buffer overflows
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
+  href="http://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Check
+  implementation on installation, or limit the size of all string inputs. </i>
+<li>src/include-glibc/bits/socket.h:145: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/bits/socket.h:200: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/bits/socket.h:288: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/bits/sockunion.h:24: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/socketbits.h:145: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/socketbits.h:200: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/include-glibc/socketbits.h:288: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:87: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:115: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:120: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:231: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:501: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:620: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:637: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:975: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:1005: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:1035: <b>  [2] </b> (buffer) <i> bcopy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:1040: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:1071: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping.c:1151: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping_common.c:15: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping_common.c:109: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:146: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:153: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:166: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:182: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:196: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:209: <b>  [2] </b> (integer) <i> atoi:
+  Unless checked, the resulting number can exceed the expected range (<a
+  href="http://cwe.mitre.org/data/definitions/190.html">CWE-190</a>). If
+  source untrusted, check both minimum and maximum, even if the input had no
+  minus sign (large numbers can roll over into negative number; consider
+  saving to an unsigned value if that is intended). </i>
+<li>src/ping_common.c:505: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping_common.c:506: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping_common.c:660: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<li>src/ping_common.h:70: <b>  [2] </b> (buffer) <i> char:
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
+  bounds checking, use functions that limit length, or ensure that the size
+  is larger than the maximum possible length. </i>
+<li>src/ping.c:253: <b>  [1] </b> (buffer) <i> strlen:
+  Does not handle strings that are not \0-terminated; if given one it may
+  perform an over-read (it could cause a crash if unprotected) (<a
+  href="http://cwe.mitre.org/data/definitions/126.html">CWE-126</a>). </i>
+<li>src/ping.c:1157: <b>  [1] </b> (port) <i> snprintf:
+  On some very old systems, snprintf is incorrectly implemented and permits
+  buffer overflows; there are also incompatible standard definitions of it.
+  Check it during installation, or use something else. </i>
+</ul>
+<h2>Analysis Summary</h2>
+<p>
+Hits = 43
+<br>
+Lines analyzed = 3253 in approximately 0.96 seconds (3376 lines/second)
+<br>
+Physical Source Lines of Code (SLOC) = 2450
+<br>
+Hits@level = [0]   0 [1]   2 [2]  32 [3]   1 [4]   8 [5]   0 <br>
+Hits@level+ = [0+]  43 [1+]  43 [2+]  41 [3+]   9 [4+]   8 [5+]   0 <br>
+Hits/KSLOC@level+ = [0+] 17.551 [1+] 17.551 [2+] 16.7347 [3+] 3.67347 [4+] 3.26531 [5+]   0 <br>
+Minimum risk level = 1
+<br>
+Not every hit is necessarily a security vulnerability.
+<br>
+There may be other security vulnerabilities; review your code!
+<br>
+See '<a href="http://www.dwheeler.com/secure-programs">Secure Programming for Linux and Unix HOWTO</a>'
+(<a href="http://www.dwheeler.com/secure-programs">http://www.dwheeler.com/secure-programs</a>) for more information.
+</body>
+</html>
