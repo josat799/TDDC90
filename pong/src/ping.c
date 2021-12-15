@@ -66,7 +66,8 @@ char copyright[] =
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
-
+#include <sys/types.h>
+#include <unistd.h>
 
 #define	MAXIPLEN	60
 #define	MAXICMPLEN	76
@@ -78,7 +79,7 @@ static int ts_type;
 static int nroute = 0;
 static uint32_t route[10];
 
-
+static uid_t user_id;
 
 struct sockaddr_in whereto;	/* who to ping */
 int optlen = 0;
@@ -96,6 +97,9 @@ static void usage(void) __attribute__((noreturn));
 static unsigned short in_cksum(const unsigned short *addr, int len, unsigned short salt);
 static void pr_icmph(uint8_t type, uint8_t code, uint32_t info, struct icmphdr *icp);
 static int parsetos(char *str);
+
+void drop_privileges(void);
+void set_privileges(void);
 
 static struct {
 	struct cmsghdr cm;
@@ -118,6 +122,10 @@ main(int argc, char **argv)
 	int ch, hold, packlen;
 	unsigned char *packet;
 	char rspace[3 + 4 * NROUTES + 1];	/* record route space */
+
+  user_id = getuid();
+
+  // drop_privileges();
 
 	source.sin_family = AF_INET;
 
@@ -195,7 +203,7 @@ main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-	if (argc == 0) 
+	if (argc == 0)
 		usage();
 	if (argc > 1) {
 		if (options & F_RROUTE)
@@ -243,9 +251,20 @@ main(int argc, char **argv)
 	if (source.sin_addr.s_addr == 0) {
 		int alen;
 		struct sockaddr_in dst = whereto;
-		int probe_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
-		if (probe_fd < 0) {
+    set_privileges();
+
+  	int probe_fd = socket(AF_INET, SOCK_DGRAM, 0);
+
+  	if ((icmp_sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
+      drop_privileges();
+  		perror("ping: icmp open socket");
+  		return(2);
+  	}
+
+    drop_privileges();
+
+    if (probe_fd < 0) {
 			perror("socket");
 			return(2);
 		}
@@ -271,6 +290,7 @@ main(int argc, char **argv)
 					}
 				}
 			}
+
 		}
 
 		if (settos &&
@@ -312,13 +332,6 @@ main(int argc, char **argv)
 
 	if (whereto.sin_addr.s_addr == 0)
 		whereto.sin_addr.s_addr = source.sin_addr.s_addr;
-
-
-	if ((icmp_sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
-		perror("ping: icmp open socket");
-		return(2);
-	}
-
 	if (device) {
 		memset(&ifr, 0, sizeof(ifr));
 		safe_strcpy(device, ifr.ifr_name);
@@ -368,11 +381,11 @@ main(int argc, char **argv)
 			      (1<<ICMP_PARAMETERPROB)|
 			      (1<<ICMP_REDIRECT)|
 			      (1<<ICMP_ECHOREPLY));
-		if (setsockopt(icmp_sock, SOL_RAW, ICMP_FILTER, 
+		if (setsockopt(icmp_sock, SOL_RAW, ICMP_FILTER,
 				(char*)&filt, sizeof(filt)) == -1)
 		{
 			perror("WARNING: setsockopt(ICMP_FILTER)");
-			fprintf(stderr, 
+			fprintf(stderr,
 				"Do you have CONFIG_SOCKET in your kernel?");
 		}
 	}
@@ -425,7 +438,7 @@ main(int argc, char **argv)
 		rspace[1+IPOPT_OFFSET] = IPOPT_MINOFF;
 		for (i=0; i<nroute; i++)
 			*(uint32_t*)&rspace[4+i*4] = route[i];
-		
+
 		if (setsockopt(icmp_sock, IPPROTO_IP, IP_OPTIONS, rspace, 4 + nroute*4) < 0) {
 			perror("ping: record route");
 			return(2);
@@ -470,12 +483,13 @@ main(int argc, char **argv)
 			return(2);
 		}
 	}
-	// Could result in sign error. Use sizeof to ensure it's safe. 
+	// Could result in sign error. Use sizeof to ensure it's safe.
 	if (datalen > 0xFFFF - 8 - optlen - 20) {
 		if (uid || datalen > sizeof(outpack)-8) {
 			fprintf(stderr, "Error: packet size %d is too large. Maximum is %d\n", datalen, 0xFFFF-8-20-optlen);
 			return(2);
 		}
+
 		/* Allow small oversize to root yet. It will cause EMSGSIZE. */
 		fprintf(stderr, "WARNING: packet size %d is too large. Maximum is %d\n", datalen, 0xFFFF-8-20-optlen);
 	}
@@ -621,7 +635,7 @@ int send_probe()
 			static volatile int fake_fucked_egcs = sizeof(struct timeval);
 			struct timeval tmp_tv;
 			gettimeofday(&tmp_tv, NULL);
-			/* egcs is crap or glibc is crap, but memcpy 
+			/* egcs is crap or glibc is crap, but memcpy
 			   does not copy anything, if len is constant! */
 			memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
 		} else {
@@ -638,7 +652,7 @@ int send_probe()
 		static volatile int fake_fucked_egcs = sizeof(struct timeval);
 	        struct timeval tmp_tv;
 		gettimeofday(&tmp_tv, NULL);
-		/* egcs is crap or glibc is crap, but memcpy 
+		/* egcs is crap or glibc is crap, but memcpy
 		   does not copy anything, if len is constant! */
 		memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
 		icp->checksum = in_cksum((unsigned short *)(icp+1), fake_fucked_egcs, ~icp->checksum);
@@ -701,7 +715,7 @@ parse_reply(struct msghdr *msg, int cc, void *addr, struct timeval *tv)
 		/* We fall here when a redirect or source quench arrived.
 		 * Also this branch processes icmp errors, when IP_RECVERR
 		 * is broken. */
-		   
+
 	        switch (icp->type) {
 		case ICMP_ECHO:
 			/* MUST NOT */
@@ -1224,6 +1238,19 @@ void install_filter(void)
 		perror("WARNING: failed to install socket filter\n");
 }
 
+void set_privileges(void) {
+  int status = seteuid(0);
+  if (status < 0) {
+    fprintf(stderr, "Error could not set privileges\n");
+  }
+}
+
+void drop_privileges(void) {
+  int status = seteuid(user_id);
+  if (status < 0) {
+    fprintf(stderr, "Error could not unset privileges\n");
+  }
+}
 
 void usage(void)
 {
