@@ -29,6 +29,7 @@ static char SNAPSHOT[] = "020927";
 #define	MAXWAIT		10		/* max seconds to wait for response */
 #define MININTERVAL	10		/* Minimal interpacket gap */
 #define MINUSERINTERVAL	200		/* Minimal allowed interval for non-root */
+#define MAXPACKETS 10000 /* Maximum allowed packets to be send  (This is a assumption) */
 
 #define SCHINT(a)	(((a) <= MININTERVAL) ? MININTERVAL : (a))
 
@@ -73,7 +74,7 @@ extern char rcvd_tbl[MAX_DUP_CHK / 8];
 extern unsigned char outpack[];
 extern int maxpacket;
 
-extern int datalen;
+extern size_t datalen;
 extern char *hostname;
 extern int uid;
 extern int ident;			/* process id to identify our packets */
@@ -87,7 +88,7 @@ extern long nrepeats;			/* number of duplicates */
 extern long ntransmitted;		/* sequence # for outbound packets = #sent */
 extern long nchecksum;			/* replies with bad checksum */
 extern long nerrors;			/* icmp errors */
-extern int interval;			/* interval between packets (msec) */
+extern size_t interval;			/* interval between packets (msec) */
 extern int preload;
 extern int deadline;			/* time to die */
 extern int lingertime;
@@ -166,7 +167,7 @@ static inline int in_flight(void)
 }
 
 static inline void acknowledge(uint16_t seq)
-{ 
+{
 	uint16_t diff = (uint16_t)ntransmitted - seq;
 	if (diff <= 0x7FFF) {
 		if ((int)diff+1 > pipesize)

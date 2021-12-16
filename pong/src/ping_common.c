@@ -22,7 +22,9 @@ long nrepeats;			/* number of duplicates */
 long ntransmitted;		/* sequence # for outbound packets = #sent */
 long nchecksum;			/* replies with bad checksum */
 long nerrors;			/* icmp errors */
-int interval = 1000;		/* interval between packets (msec) */
+
+size_t interval = 1000;		/* interval between packets (msec) */
+
 int preload;
 int deadline = 0;		/* time to die */
 int lingertime = MAXWAIT*1000;
@@ -52,7 +54,7 @@ long long tsum;			/* sum of all times, for doing average */
 long long tsum2;
 int  pipesize = -1;
 
-int datalen = DEFDATALEN;
+size_t datalen = DEFDATALEN;
 
 char *hostname;
 int uid;
@@ -107,7 +109,7 @@ void common_options(int ch)
 		break;
 	case 'c':
 		npackets = atoi(optarg);
-		if (npackets <= 0) {
+		if (npackets <= 0 || npackets >= MAXPACKETS) {
 			fprintf(stderr, "ping: bad number of packets to transmit.\n");
 			exit(2);
 		}
@@ -261,7 +263,7 @@ int __schedule_exit(int next)
 
 static inline void update_interval(void)
 {
-	int est = rtt ? rtt/8 : interval*1000; 
+	int est = rtt ? rtt/8 : interval*1000;
 
 	interval = (est+rtt_addend+500)/1000;
 	if (uid && interval < MINUSERINTERVAL)
@@ -282,7 +284,7 @@ int pinger(void)
 	static int tokens;
 	int i;
 
-	/* Have we already sent enough? If we have, return an arbitrary positive value. */ 
+	/* Have we already sent enough? If we have, return an arbitrary positive value. */
 	if (exiting || (npackets && ntransmitted >= npackets && !deadline))
 		return 1000;
 
@@ -502,7 +504,7 @@ void setup(int icmp_sock)
 
 void main_loop(int icmp_sock, uint8_t *packet, int packlen)
 {
-	char addrbuf[128];
+ 	char addrbuf[128];
 	char ans_data[4096];
 	struct iovec iov;
 	struct msghdr msg;
@@ -535,7 +537,7 @@ void main_loop(int icmp_sock, uint8_t *packet, int packlen)
 		 * If next<=0 send now or as soon as possible. */
 
 		/* Technical part. Looks wicked. Could be dropped,
-		 * if everyone used the newest kernel. :-) 
+		 * if everyone used the newest kernel. :-)
 		 * Its purpose is:
 		 * 1. Provide intervals less than resolution of scheduler.
 		 *    Solution: spinning.
@@ -546,7 +548,7 @@ void main_loop(int icmp_sock, uint8_t *packet, int packlen)
 			int recv_expected = in_flight();
 
 			/* If we are here, recvmsg() is unable to wait for
-			 * required timeout. */ 
+			 * required timeout. */
 			if (1000*next <= 1000000/(int)HZ) {
 				/* Very short timeout... So, if we wait for
 				 * something, we sleep for MININTERVAL.
@@ -626,7 +628,7 @@ void main_loop(int icmp_sock, uint8_t *packet, int packlen)
 				not_ours = parse_reply(&msg, cc, addrbuf, recv_timep);
 			}
 
-			/* See? ... someone runs another ping on this host. */ 
+			/* See? ... someone runs another ping on this host. */
 			if (not_ours)
 				install_filter();
 
@@ -712,7 +714,7 @@ restamp:
 		int i;
 		uint8_t *cp, *dp;
 		printf("%d bytes from ", cc);
-		printf(from);
+		printf("%d", from);
 		printf(": icmp_seq=%u", seq);
 
 		if (hops >= 0)
@@ -788,7 +790,7 @@ void finish(void)
 	putchar('\n');
 	fflush(stdout);
 	printf("--- ");
-	printf(hostname);
+	printf("%d", hostname);
 	printf(" statistics ---\n");
 	printf("%ld packets transmitted, ", ntransmitted);
 	printf("%ld received", nreceived);
@@ -822,7 +824,7 @@ void finish(void)
 	}
 	if (pipesize > 1)
 		printf(", pipe %d", pipesize);
-	if (ntransmitted > 1 && nreceived && 
+	if (ntransmitted > 1 && nreceived &&
 			(!interval || (options&(F_FLOOD|F_ADAPTIVE)))) {
 		int ipg = (1000000*(long long)tv.tv_sec+tv.tv_usec)/(ntransmitted-1);
 		printf(", ipg/ewma %d.%03d/%d.%03d ms",
