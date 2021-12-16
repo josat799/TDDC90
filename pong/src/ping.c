@@ -130,6 +130,14 @@ main(int argc, char **argv)
 	source.sin_family = AF_INET;
 
 	preload = 1;
+  int i;
+
+  if (argc > 5) {
+    exit(1);
+  }
+  if (sizeof(argv) > 20) {
+    exit(1);
+  }
 	while ((ch = getopt(argc, argv, COMMON_OPTSTR "bRT:")) != EOF) {
 		switch(ch) {
 		case 'b':
@@ -231,14 +239,15 @@ main(int argc, char **argv)
 		} else {
 			hp = gethostbyname2(target, AF_INET);
 			if (!hp) {
-				fprintf(stderr, "ping: unknown host ");
+				fprintf(stderr, "ping: unknown host ssssssssssssssssssss %s ", target);
 				// Could be victim of format string bug. Use %s or something to avoid putting out whatever's on the stack.
-				fprintf(stderr, target);
 				fprintf(stderr, "\n");
 				return(2);
 			}
 			// Could be out-of-bounds read?
-			memcpy(&whereto.sin_addr, hp->h_addr, 4);
+      if (sizeof(whereto.sin_addr) > sizeof(hp->h_addr)) {
+  		  memcpy(&whereto.sin_addr, hp->h_addr, sizeof(whereto.sin_addr));
+      }
 			safe_strcpy(hp->h_name, hnamebuf);
 			hostname = hnamebuf;
 		}
@@ -271,14 +280,13 @@ main(int argc, char **argv)
 		if (device) {
 			memset(&ifr, 0, sizeof(ifr));
 			// Could result in buffer overrun as destination size is not specified
-			strcpy(ifr.ifr_name, device); // Is banned by SDL
+			safe_strcpy(ifr.ifr_name, device); // Is banned by SDL
 			// Off-by-one error caused by strlen
-			if (setsockopt(probe_fd, SOL_SOCKET, SO_BINDTODEVICE, device, strlen(device)+1) == -1) {
+			if (setsockopt(probe_fd, SOL_SOCKET, SO_BINDTODEVICE, device, sizeof(device)-1) == -1) {
 				if (IN_MULTICAST(ntohl(dst.sin_addr.s_addr))) {
 					struct ip_mreqn imr;
 					if (ioctl(probe_fd, SIOCGIFINDEX, &ifr) < 0) {
-						fprintf(stderr, "ping: unknown iface ");
-						fprintf(stderr, device);
+						fprintf(stderr, "ping: unknown iface dddddddddddddddddddddddddddddd %s ", device);
 						fprintf(stderr, "\n");
 						return(2);
 					}
@@ -336,8 +344,7 @@ main(int argc, char **argv)
 		memset(&ifr, 0, sizeof(ifr));
 		safe_strcpy(device, ifr.ifr_name);
 		if (ioctl(icmp_sock, SIOCGIFINDEX, &ifr) < 0) {
-		  fprintf(stderr, "ping: unknown iface ");
-		  fprintf(stderr, device);
+		  fprintf(stderr, "ping: unknown iface pppppppppppppppppppppppp %s ", device);
 		  fprintf(stderr, "\n");
 		  return(2);
 		}
@@ -502,8 +509,7 @@ main(int argc, char **argv)
 		return(2);
 	}
 
-	printf("PING ");
-	printf(hostname);
+	printf("PING %s", hostname);
 	printf("(%s) ", inet_ntoa(whereto.sin_addr));
 	if (device || (options&F_STRICTSOURCE))
 		printf("from %s %s: ", inet_ntoa(source.sin_addr), device ? device : "");
@@ -637,7 +643,9 @@ int send_probe()
 			gettimeofday(&tmp_tv, NULL);
 			/* egcs is crap or glibc is crap, but memcpy
 			   does not copy anything, if len is constant! */
-			memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
+      if (sizeof(fake_fucked_egcs) < sizeof(*(icp+1))) {
+			     memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
+      }
 		} else {
 			memset(icp+1, 0, sizeof(struct timeval));
 		}
@@ -654,7 +662,9 @@ int send_probe()
 		gettimeofday(&tmp_tv, NULL);
 		/* egcs is crap or glibc is crap, but memcpy
 		   does not copy anything, if len is constant! */
-		memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
+    if (fake_fucked_egcs < sizeof(icp+1)) {
+		    memcpy(icp+1, &tmp_tv, fake_fucked_egcs);
+    }
 		icp->checksum = in_cksum((unsigned short *)(icp+1), fake_fucked_egcs, ~icp->checksum);
 	}
 
@@ -1022,7 +1032,9 @@ void pr_options(unsigned char * cp, int hlen)
 			if (j > IPOPT_MINOFF) {
 				for (;;) {
 					uint32_t address;
-					memcpy(&address, cp, 4);
+          if (sizeof(address) < 4) {
+					   memcpy(&address, cp, 4);
+          }
 					cp += 4;
 					if (address == 0)
 						printf("\t0.0.0.0");
@@ -1052,7 +1064,9 @@ void pr_options(unsigned char * cp, int hlen)
 				break;
 			}
 			old_rrlen = i;
-			bcopy((char *)cp, old_rr, i);
+      if (sizeof(old_rr) < sizeof(cp)) {
+			   bcopy((char *)cp, old_rr, i);
+       }
 			printf("\nRR: ");
 			cp++;
 			for (;;) {
