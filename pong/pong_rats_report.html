@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head></head>
+<body>
+Entries in perl database: <b>33</b><br>
+Entries in ruby database: <b>46</b><br>
+Entries in python database: <b>62</b><br>
+Entries in c database: <b>334</b><br>
+Entries in php database: <b>55</b><br>
+<br><br>Analyzing <b>.//ping_common.c</b><br>
+Analyzing <b>.//ping.c</b><br>
+<h2>RATS results.
+</h2><br>
+  <b>Severity: High</b><br/>
+  Issue: fixed size global buffer<br/>
+    Extra care should be taken to ensure that character arrays that are
+    allocated on the stack are used safely.  They are prime targets for
+    buffer overflow attacks.
+  <br/>
+<ul>
+File: <b>.//ping_common.c</b><br/>Lines: 
+505 506   </ul>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+115 120 501 975 1151   </ul>
+  <b>Severity: High</b><br/>
+  Issue: printf<br/>
+    Check to be sure that the non-constant format string passed as argument 1 
+    to this function call does not come from an untrusted source that could
+    have added formatting characters that the code is not prepared to handle.
+  <br/>
+<ul>
+File: <b>.//ping_common.c</b><br/>Lines: 
+715 791   </ul>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+486   </ul>
+  <b>Severity: High</b><br/>
+  Issue: getopt<br/>
+    Truncate all input strings to a reasonable length 
+before passing them to this function
+  <br/>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+125   </ul>
+  <b>Severity: High</b><br/>
+  Issue: fprintf<br/>
+    Check to be sure that the non-constant format string passed as argument 2 
+    to this function call does not come from an untrusted source that could
+    have added formatting characters that the code is not prepared to handle.
+  <br/>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+227 258 323   </ul>
+  <b>Severity: High</b><br/>
+  Issue: strcpy<br/>
+    Check to be sure that argument 2 passed to this function call will not
+    copy more data than can be handled, resulting in a buffer overflow.
+  <br/>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+252   </ul>
+  <b>Severity: High</b><br/>
+  Issue: gethostbyaddr<br/>
+    DNS results can easily be forged by an attacker (or 
+arbitrarily set to large values, etc), and should not be trusted.
+  <br/>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+1154   </ul>
+  <b>Severity: High</b><br/>
+  Issue: sprintf<br/>
+    Check to be sure that the format string passed as argument 2 to this
+    function call does not come from an untrusted source that could have added
+    formatting characters that the code is not prepared to handle.
+    Additionally, the format string could contain `%s' without precision that
+    could result in a buffer overflow.
+  <br/>
+<ul>
+File: <b>.//ping.c</b><br/>Lines: 
+1155   </ul>
+<h3>Inputs detected at the following points</h3>
+<ul>
+</ul>
+<br><br>
+Total lines analyzed: <b>2091</b><br>
+Total time <b>0.041582</b> seconds<br>
+<b>50286</b> lines per second<br>
+</body></html>
