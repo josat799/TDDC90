@@ -123,9 +123,11 @@ main(int argc, char **argv)
 	unsigned char *packet;
 	char rspace[3 + 4 * NROUTES + 1];	/* record route space */
 
-  user_id = getuid();
+  set_privileges();
 
-  // drop_privileges();
+  icmp_sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+
+  drop_privileges();
 
 	source.sin_family = AF_INET;
 
@@ -261,17 +263,12 @@ main(int argc, char **argv)
 		int alen;
 		struct sockaddr_in dst = whereto;
 
-    set_privileges();
-
   	int probe_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
-  	if ((icmp_sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
-      drop_privileges();
+  	if (icmp_sock < 0) {
   		perror("ping: icmp open socket");
   		return(2);
   	}
-
-    drop_privileges();
 
     if (probe_fd < 0) {
 			perror("socket");
